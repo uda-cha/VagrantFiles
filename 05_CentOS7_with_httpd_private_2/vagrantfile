@@ -1,0 +1,68 @@
+Vagrant.configure("2") do |config|
+  
+  config.vm.provider "virtualbox" do |vb|
+    vb.gui = true
+    vb.memory = "768"
+    vb.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
+  end
+  
+  config.vm.box = "CentOS/7"
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+  config.vm.provision "shell",
+    run: "always",
+    inline: "echo 'enable pw auth on ssh...' && sed -i -e 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config"
+  config.vm.provision "shell",
+    run: "always",
+    inline: "echo 'set keyboard...' && echo 'KEYMAP=jp106' | sudo tee /etc/vconsole.conf"
+  config.vm.provision "shell",
+    run: "always",
+    inline: "echo 'install httpd...' && yum install httpd -y"
+  config.vm.provision "shell",
+    run: "always",
+    inline: "echo 'start httpd...' && systemctl start httpd"
+  config.vm.provision "shell",
+    run: "always",
+    inline: "echo 'enable httpd...' && systemctl enable httpd"
+  config.vm.provision "shell",
+    run: "always",
+    inline: "echo 'enable firewalld...' &&systemctl start firewalld"
+  config.vm.provision "shell",
+    run: "always",
+    inline: "echo 'allow to connect 80/tcp...' && firewall-cmd --permanent --zone=public --add-service=http"
+  config.vm.provision "shell",
+    run: "always",
+    inline: "echo 'reload firewalld...' && systemctl reload firewalld"
+
+  config.vm.define "slave1" do |slave1|
+    slave1.vm.host_name = "CentOS7WebAAA"
+    slave1.vm.network "private_network",
+      ip: "192.168.56.202",
+      netmask: "255.255.255.0"
+    slave1.vm.provision "shell",
+      run: "always",
+      inline: "echo 'create /var/www/html/AAA...' && mkdir /var/www/html/AAA"
+    slave1.vm.provision "shell",
+      run: "always",
+      inline: "echo 'create test html file...' && echo this_is_`hostname` > /var/www/html/AAA/index.html"
+    slave1.vm.provision "shell",
+      run: "always",
+      inline: "echo 'reboot...' && shutdown -r now"
+  end
+ 
+  config.vm.define "slave2" do |slave2|
+    slave2.vm.host_name = "CentOS7WebAAB"
+    slave2.vm.network "private_network",
+      ip: "192.168.56.203",
+      netmask: "255.255.255.0"
+    slave2.vm.provision "shell",
+      run: "always",
+      inline: "echo 'create /var/www/html/AAB...' && mkdir /var/www/html/AAB"
+    slave2.vm.provision "shell",
+      run: "always",
+      inline: "echo 'create test html file...' && echo this_is_`hostname` > /var/www/html/AAB/index.html"
+    slave2.vm.provision "shell",
+      run: "always",
+      inline: "echo 'reboot...' && shutdown -r now"
+  end
+
+end

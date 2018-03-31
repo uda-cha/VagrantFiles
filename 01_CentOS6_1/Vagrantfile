@@ -1,0 +1,40 @@
+$script = <<SCRIPT
+cat << "EOS" | sudo tee "/etc/sysconfig/keyboard"
+KEYTABLE="jp106"
+MODEL="jp106"
+LAYOUT="jp"
+KEYBOARDTYPE="pc"
+EOS
+SCRIPT
+
+Vagrant.configure("2") do |config|
+  
+  config.vm.provider "virtualbox" do |vb|
+    vb.gui = true
+    vb.memory = "768"
+  end
+  
+  config.vm.box = "CentOS/6"
+  config.vm.host_name = "CentOS6vm"
+  config.vm.network "public_network",
+    ip: "192.168.100.101",
+    netmask: "255.255.255.0",
+    mac: "080027000101"
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+  config.vm.provision "shell",
+    run: "always",
+    inline: "route add default gw 192.168.100.1"
+  config.vm.provision "shell",
+    run: "always",
+    inline: "eval `route -n | awk '{ if ($8 ==\"eth0\" && $2 != \"0.0.0.0\") print \"route del default gw \" $2; }'`"
+  config.vm.provision "shell",
+    run: "always",
+    inline: "sed -i -e 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config"
+  config.vm.provision "shell",
+    run: "always",
+    inline: $script
+  config.vm.provision "shell",
+    run: "always",
+    inline: "shutdown -r now"
+
+end
