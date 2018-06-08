@@ -1,3 +1,8 @@
+$hostname = "CentOS7vm"
+$ip = "192.168.100.220"
+$netmask = "255.255.255.0"
+$gw = "192.168.100.1"
+
 Vagrant.configure("2") do |config|
   
   config.vm.provider "virtualbox" do |vb|
@@ -6,10 +11,10 @@ Vagrant.configure("2") do |config|
   end
   
   config.vm.box = "CentOS/7"
-  config.vm.host_name = "CentOS7vgrt"
+  config.vm.host_name = $hostname
   config.vm.network "public_network",
-    ip: "192.168.100.220",
-    netmask: "255.255.255.0"
+    ip: $ip,
+    netmask: $netmask
   config.vm.synced_folder ".", "/vagrant", disabled: true
   config.vm.provision "shell",
     run: "always",
@@ -22,5 +27,5 @@ Vagrant.configure("2") do |config|
     inline: "echo 'set keyboard...' && echo 'KEYMAP=jp106' | sudo tee /etc/vconsole.conf"
   config.vm.provision "shell",
     run: "always",
-    inline: "echo 'enable firewalld...' &&systemctl start firewalld"
+    inline: "echo 'reboot...' && shutdown -r now"
 end
