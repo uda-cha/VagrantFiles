@@ -1,0 +1,30 @@
+$hostname = "CentOS6vm"
+$ip = "192.168.56.122"
+$netmask = "255.255.255.0"
+#$gw = "192.168.56.1" #dont set default gateway when you use private_network
+
+Vagrant.configure("2") do |config|
+  
+  config.vm.provider "virtualbox" do |vb|
+    vb.gui = false
+    vb.memory = "768"
+  end
+
+  config.vm.network "private_network",
+    ip: $ip,
+    netmask: $netmask
+  
+##begin your provisioning
+#
+#  config.vm.provision "shell",
+#    run: "always",
+#    inline: "yum install httpd -y"
+#  config.vm.provision "shell",
+#    run: "always",
+#    inline: "chkconfig httpd on"
+#
+###end your provisioning
+  
+end
+
+load "../Common/Vagrantfile.common" if File.exist?("../Common/Vagrantfile.common")

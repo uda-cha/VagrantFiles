@@ -1,8 +1,3 @@
-$hostname = "CentOS6vm"
-$ip = "192.168.100.122"
-$netmask = "255.255.255.0"
-$gw = "192.168.100.1"
-
 $script = <<SCRIPT
 cat << "EOS" | sudo tee "/etc/sysconfig/keyboard"
 KEYTABLE="jp106"
@@ -14,23 +9,9 @@ SCRIPT
 
 Vagrant.configure("2") do |config|
   
-  config.vm.provider "virtualbox" do |vb|
-    vb.gui = false
-    vb.memory = "768"
-  end
-  
   config.vm.box = "CentOS/6"
   config.vm.host_name = $hostname
-  config.vm.network "public_network",
-    ip: $ip,
-    netmask: $netmask
   config.vm.synced_folder ".", "/vagrant", disabled: true
-  config.vm.provision "shell",
-    run: "always",
-    inline: "route add default gw " + $gw
-  config.vm.provision "shell",
-    run: "always",
-    inline: "eval `route -n | awk '{ if ($8 ==\"eth0\" && $2 != \"0.0.0.0\") print \"route del default gw \" $2; }'`"
   config.vm.provision "shell",
     run: "always",
     inline: "sed -i -e 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config"
