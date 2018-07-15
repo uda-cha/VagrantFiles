@@ -7,10 +7,11 @@ KEYBOARDTYPE="pc"
 EOS
 SCRIPT
 
+$reboot = "shutdown -r now"
+
 Vagrant.configure("2") do |config|
   
   config.vm.box = "CentOS/6"
-  config.vm.host_name = $hostname
   config.vm.synced_folder ".", "/vagrant", disabled: true
   config.vm.provision "shell",
     run: "always",
@@ -18,8 +19,5 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell",
     run: "always",
     inline: $script
-  config.vm.provision "shell",
-    run: "always",
-    inline: "shutdown -r now"
 
 end
