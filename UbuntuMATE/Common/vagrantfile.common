@@ -18,6 +18,8 @@ BACKSPACE="guess"
 EOS
 SCRIPT
 
+$reboot = "shutdown -r now"
+
 Vagrant.configure("2") do |config|
 
   config.vm.box = "cxtlabs/vagrant-ubuntu-16.04-mate"
@@ -32,8 +34,5 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell",
     run: "always",
     inline: $script_kb_GUI
-  config.vm.provision "shell",
-    run: "always",
-    inline: "shutdown -r now"
 
 end

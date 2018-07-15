@@ -28,6 +28,10 @@ Vagrant.configure("2") do |config|
 #
 ###end your provisioning
   
+  config.vm.provision "shell",
+    run: "always",
+    inline: $reboot
+  
 end
 
 load "../Common/Vagrantfile.common" if File.exist?("../Common/Vagrantfile.common")
