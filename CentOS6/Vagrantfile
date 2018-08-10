@@ -1,13 +1,12 @@
-$hostname1 = "CentOS7vm1"
-$ip1 = "192.168.100.121"
+$hostname1 = "CentOS6vm1"
+$ip1 = "192.168.56.121"
 $netmask1 = "255.255.255.0"
-$gw1 = "192.168.100.1"
+$network_type1 = "private_network" #or public_network, or forwarded_port
 
-#$hostname2 = "CentOS7vm2" #if you want to build multiple vms
-#$ip2 = "192.168.100.122"
+#$hostname2 = "CentOS6vm2" #if you want to build multiple vms
+#$ip2 = "192.168.56.122"
 #$netmask2 = "255.255.255.0"
-#$gw2 = "192.168.100.1"
-
+#$network_type2 = "private_network" #or public_network, or forwarded_port
 
 Vagrant.configure("2") do |config|
   
@@ -18,12 +17,9 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "vm1" do |vm1|
     vm1.vm.host_name = $hostname1
-    vm1.vm.network "public_network",
+    vm1.vm.network $network_type1,
       ip: $ip1,
       netmask: $netmask1
-    vm1.vm.provision "shell",
-      run: "always",
-      inline: "nmcli con mod 'System eth1' ipv4.gateway " + $gw1
     
 #    #begin your provisioning
 #    
@@ -32,7 +28,7 @@ Vagrant.configure("2") do |config|
 #      inline: "yum install httpd -y"
 #    vm1.vm.provision "shell",
 #      run: "always",
-#      inline: "systemctl start httpd"
+#      inline: "chkconfig httpd on"
 #    
 #    #end your provisioning
     
@@ -44,12 +40,9 @@ Vagrant.configure("2") do |config|
   
 #  config.vm.define "vm2" do |vm2|  #if you want to build multiple vms
 #    vm2.vm.host_name = $hostname2
-#    vm2.vm.network "public_network",
+#    vm2.vm.network $network_type2,
 #      ip: $ip2,
 #      netmask: $netmask2
-#    vm2.vm.provision "shell",
-#      run: "always",
-#      inline: "nmcli con mod 'System eth1' ipv4.gateway " + $gw2
 #    
 ##    #begin your provisioning
 ##    
@@ -58,7 +51,7 @@ Vagrant.configure("2") do |config|
 ##      inline: "yum install httpd -y"
 ##    vm2.vm.provision "shell",
 ##      run: "always",
-##      inline: "systemctl start httpd"
+##      inline: "chkconfig httpd on"
 ##    
 ##    #end your provisioning
 #    
@@ -70,4 +63,4 @@ Vagrant.configure("2") do |config|
 
 end
 
-load "../Common/Vagrantfile.common" if File.exist?("../Common/Vagrantfile.common")
+load "./Vagrantfile.common" if File.exist?("./Vagrantfile.common")
