@@ -1,0 +1,14 @@
+$reboot = "shutdown -r now"
+
+Vagrant.configure("2") do |config|
+  
+  config.vm.box = "CentOS/7"
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+  config.vm.provision "shell",
+    run: "always",
+    inline: "sed -i -e 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config"
+  config.vm.provision "shell",
+    run: "always",
+    inline: "echo 'KEYMAP=jp106' | sudo tee /etc/vconsole.conf"
+
+end
