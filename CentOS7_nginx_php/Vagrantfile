@@ -3,22 +3,6 @@ $ip1 = "192.168.56.121"
 $netmask1 = "255.255.255.0"
 $network_type1 = "private_network" #or public_network, or forwarded_port
 
-$script = <<SCRIPT
-cat << "EOS" > /etc/nginx/default.d/myphp.conf
-location / {
-    root   /usr/share/nginx/html;
-    index  index.html index.htm index.php;
-}
-location ~ \.php$ {
-    root           /usr/share/nginx/html;
-    fastcgi_pass   127.0.0.1:9000;
-    fastcgi_index  index.php;
-    fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
-    include        fastcgi_params;
-}
-EOS
-SCRIPT
-
 #$hostname2 = "CentOS7vm2" #if you want to build multiple vms
 #$ip2 = "192.168.56.122"
 #$netmask2 = "255.255.255.0"
@@ -39,45 +23,9 @@ Vagrant.configure("2") do |config|
     
     #begin your provisioning
     
-    vm1.vm.provision "shell",
-      run: "always",
-      inline: "yum install epel-release -y"
-    vm1.vm.provision "shell",
-      run: "always",
-      inline: "yum install nginx php php-fpm vim tree -y"
-    vm1.vm.provision "shell",
-      run: "always",
-      inline: "sed -i -e 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config"
-    vm1.vm.provision "shell",
-      run: "always",
-      inline: "sed -i -e 's/user = apache/user = nginx/g' /etc/php-fpm.d/www.conf"
-    vm1.vm.provision "shell",
-      run: "always",
-      inline: "sed -i -e 's/group = apache/group = nginx/g' /etc/php-fpm.d/www.conf"
-    vm1.vm.provision "shell",
-      run: "always",
-      inline: "chown -R nginx:nginx /usr/share/nginx/html"
-    vm1.vm.provision "shell",
-      run: "always",
-      inline: "chmod 775 /usr/share/nginx/html"
-    vm1.vm.provision "shell",
-      run: "always",
-      inline: "chmod 664 /usr/share/nginx/html/*"
-    vm1.vm.provision "shell",
-      run: "always",
-      inline: "gpasswd -a vagrant nginx"
-    vm1.vm.provision "shell",
-      run: "always",
-      inline: "sed -i -e 'N;s/^\\s*\\slocation \\/ {.*}//' /etc/nginx/nginx.conf"
-    vm1.vm.provision "shell",
-      run: "always",
-      inline: $script
-    vm1.vm.provision "shell",
-      run: "always",
-      inline: "systemctl enable nginx php-fpm"
-    vm1.vm.provision "shell",
-      run: "always",
-      inline: "systemctl start nginx php-fpm"
+    #vm1.vm.provision "shell",
+    #  run: "always",
+    #  inline: "yum install httpd"
       
     #end your provisioning
     

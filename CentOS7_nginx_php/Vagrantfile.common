@@ -1,4 +1,20 @@
 $reboot = "shutdown -r now"
+$script = <<SCRIPT
+cat << "EOS" > /etc/nginx/default.d/myphp.conf
+location / {
+    root   /usr/share/nginx/html;
+    index  index.html index.htm index.php;
+}
+location ~ \.php$ {
+    root           /usr/share/nginx/html;
+    fastcgi_pass   127.0.0.1:9000;
+    fastcgi_index  index.php;
+    fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+    include        fastcgi_params;
+}
+EOS
+SCRIPT
+
 
 Vagrant.configure("2") do |config|
   
@@ -10,5 +26,46 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell",
     run: "always",
     inline: "echo 'KEYMAP=jp106' | sudo tee /etc/vconsole.conf"
-
+  config.vm.provision "shell",
+    run: "always",
+    inline: "yum install epel-release -y"
+  config.vm.provision "shell",
+    run: "always",
+    inline: "yum install nginx php php-fpm vim tree -y"
+  config.vm.provision "shell",
+    run: "always",
+    inline: "sed -i -e 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config"
+  config.vm.provision "shell",
+    run: "always",
+    inline: "sed -i -e 's/;default_charset = \"UTF-8\"/default_charset = \"UTF-8\"/g' /etc/php.ini"
+  config.vm.provision "shell",
+    run: "always",
+    inline: "sed -i -e 's/user = apache/user = nginx/g' /etc/php-fpm.d/www.conf"
+  config.vm.provision "shell",
+    run: "always",
+    inline: "sed -i -e 's/group = apache/group = nginx/g' /etc/php-fpm.d/www.conf"
+  config.vm.provision "shell",
+    run: "always",
+    inline: "chown -R nginx:nginx /usr/share/nginx/html"
+  config.vm.provision "shell",
+    run: "always",
+    inline: "chmod 775 /usr/share/nginx/html"
+  config.vm.provision "shell",
+    run: "always",
+    inline: "chmod 664 /usr/share/nginx/html/*"
+  config.vm.provision "shell",
+    run: "always",
+    inline: "gpasswd -a vagrant nginx"
+  config.vm.provision "shell",
+    run: "always",
+    inline: "gpasswd -a nginx vagrant"
+  config.vm.provision "shell",
+    run: "always",
+    inline: "sed -i -e 'N;s/^\\s*\\slocation \\/ {.*}//' /etc/nginx/nginx.conf"
+  config.vm.provision "shell",
+    run: "always",
+    inline: $script
+  config.vm.provision "shell",
+    run: "always",
+    inline: "systemctl enable nginx php-fpm"
 end
