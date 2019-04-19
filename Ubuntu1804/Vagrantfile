@@ -1,0 +1,34 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+@allhosts = [
+  vm1: {
+    hostname:     "ubuntu1",
+    ip:           "192.168.56.121",
+    netmask:      "255.255.255.0",
+    network_type: "private_network",   #or public_network, or forwarded_port
+    gui:          false,
+    memory:       "1024",
+    command: [
+      "apt-get update",
+      "apt-get install apache2 -y",
+      "systemctl start apache2",
+    ],
+  },
+
+  vm2: {
+    hostname:     "ubuntu2",
+    ip:           "192.168.56.122",
+    netmask:      "255.255.255.0",
+    network_type: "private_network",   #or public_network, or forwarded_port
+    gui:          false,
+    memory:       "1024",
+    command: [
+      "apt-get update",
+      "apt-get install nginx -y",
+      "systemctl start nginx",
+    ],
+  },
+]
+
+load "./Vagrantfile.common" if File.exist?("./Vagrantfile.common")

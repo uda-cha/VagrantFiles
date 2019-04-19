@@ -1,0 +1,58 @@
+$script_kb_CUI = <<SCRIPT
+cat << "EOS" | sudo tee "/etc/default/console-setup"
+KEYTABLE="jp106"
+MODEL="jp106"
+LAYOUT="jp"
+KEYBOARDTYPE="pc"
+EOS
+SCRIPT
+
+$script_kb_GUI = <<SCRIPT
+cat << "EOS" | sudo tee "/etc/default/keyboard"
+XKBMODEL="pc105"
+XKBLAYOUT="jp,jp"
+XKBVARIANT=""
+XKBOPTIONS=""
+
+BACKSPACE="guess"
+EOS
+SCRIPT
+
+$reboot = "shutdown -r now"
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/bionic64"
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+  config.vm.provision "shell",
+    run: "always",
+    inline: $script_kb_CUI
+  config.vm.provision "shell",
+    run: "always",
+    inline: $script_kb_GUI
+
+  @allhosts.each do |host|
+    host.each do |h|
+      config.vm.define h[0].to_s do |machine|
+        config.vm.provider "virtualbox" do |vb|
+          vb.gui = h[1][:gui]
+          vb.memory = h[1][:memory]
+        end
+
+        machine.vm.host_name = h[1][:hostname]
+        machine.vm.network h[1][:network_type],
+          ip:        h[1][:ip],
+          netmask:   h[1][:netmask]
+        
+        h[1][:command].each do |c|
+          machine.vm.provision "shell",
+            run: "always",
+            inline: c
+        end
+
+        machine.vm.provision "shell",
+          run: "always",
+          inline: $reboot
+      end
+    end
+  end
+end
