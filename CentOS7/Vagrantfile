@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-@allhosts = [
+@allhosts = {
   vm1: {
     hostname:     "CentOS7vm1",
     ip:           "192.168.56.121",
@@ -11,7 +11,7 @@
     memory:       "768",
     command: [
       "yum install httpd -y",
-      "systemctl start httpd"
+      "systemctl start httpd",
     ],
   },
 
@@ -24,9 +24,9 @@
     memory:       "1024",
     command: [
       "yum install samba -y",
-      "systemctl start smb nmb"
+      "systemctl start smb nmb",
     ],
   },
-]
+}
 
 load "./Vagrantfile.common" if File.exist?("./Vagrantfile.common")

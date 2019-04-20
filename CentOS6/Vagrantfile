@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-@allhosts = [
+@allhosts = {
   vm1: {
     hostname:     "CentOS6vm1",
     ip:           "192.168.56.121",
@@ -28,6 +28,6 @@
       "service nmb start",
     ],
   },
-]
+}
 
 load "./Vagrantfile.common" if File.exist?("./Vagrantfile.common")

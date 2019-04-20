@@ -17,7 +17,7 @@ location ~ \.php$ {
 EOS
 SCRIPT
 
-@allhosts = [
+@allhosts = {
   vm1: {
     hostname:     "CentOS7vm1",
     ip:           "192.168.56.121",
@@ -42,6 +42,6 @@ SCRIPT
         "systemctl enable nginx php-fpm",
     ],
   },
-]
+}
 
 load "./Vagrantfile.common" if File.exist?("./Vagrantfile.common")

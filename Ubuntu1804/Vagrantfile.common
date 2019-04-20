@@ -30,29 +30,27 @@ Vagrant.configure("2") do |config|
     run: "always",
     inline: $script_kb_GUI
 
-  @allhosts.each do |host|
-    host.each do |h|
-      config.vm.define h[0].to_s do |machine|
-        config.vm.provider "virtualbox" do |vb|
-          vb.gui = h[1][:gui]
-          vb.memory = h[1][:memory]
-        end
-
-        machine.vm.host_name = h[1][:hostname]
-        machine.vm.network h[1][:network_type],
-          ip:        h[1][:ip],
-          netmask:   h[1][:netmask]
-        
-        h[1][:command].each do |c|
-          machine.vm.provision "shell",
-            run: "always",
-            inline: c
-        end
-
-        machine.vm.provision "shell",
-          run: "always",
-          inline: $reboot
+  @allhosts.each do |host, parameter|
+    config.vm.define host.to_s do |h|
+      config.vm.provider "virtualbox" do |vb|
+        vb.gui = parameter[:gui]
+        vb.memory = parameter[:memory]
       end
+
+      h.vm.host_name = parameter[:hostname]
+      h.vm.network parameter[:network_type],
+        ip:        parameter[:ip],
+        netmask:   parameter[:netmask]
+      
+      parameter[:command].each do |c|
+        h.vm.provision "shell",
+          run: "always",
+          inline: c
+      end
+
+      h.vm.provision "shell",
+        run: "always",
+        inline: $reboot
     end
   end
 end
