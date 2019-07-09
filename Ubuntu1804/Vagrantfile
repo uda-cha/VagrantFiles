@@ -9,6 +9,7 @@
     network_type: "private_network",   #or public_network, or forwarded_port
     gui:          false,
     memory:       "1024",
+    cpus:         "1",
     command: [
       "apt-get update",
       "apt-get install apache2 -y",
@@ -23,6 +24,7 @@
     network_type: "private_network",   #or public_network, or forwarded_port
     gui:          false,
     memory:       "1024",
+    cpus:         "1",
     command: [
       "apt-get update",
       "apt-get install nginx -y",

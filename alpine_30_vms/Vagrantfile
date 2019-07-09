@@ -6,6 +6,7 @@ Vagrant.configure("2") do |config|
   config.vm.provider "virtualbox" do |vb|
     vb.gui = false
     vb.memory = "128"
+    vb.cpus = 1
   end
 
   config.vm.box = "maier/alpine-3.1.3-x86_64"
