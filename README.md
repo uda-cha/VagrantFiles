@@ -2,9 +2,9 @@
 
 ## これはなに？
 
-自分用のVagrantfile集です。仮想化プラットフォームはVirtualBoxのみで動作を確認しています。
+自分用のVagrantfile集です。仮想化プラットフォームはVirtualBoxと一部Hyper-Vで動作を確認しています。
 
-## 使い方
+## 使い方 with VirtualBox
 
 1. VirtualBoxをインストール
 2. Vagrantをインストール
@@ -17,6 +17,7 @@ PS > git clone https://github.com/uda-cha/VagrantFiles.git
 PS > cd CentOS7
 PS > vagrant up
 ```
+
 5. sshで作成した仮想マシンにログインして好きに使います。
    - ユーザ名: vagrant (パスワードなしでsudoできるユーザです)
    - パスワード: vagrant
@@ -31,6 +32,19 @@ PS > vagrant halt
 ```
 PS > vagrant destroy
 ```
+
+## 使い方 with Hyper-V
+
+使い方 with VirtualBoxとの差分を示します。なお、Hyper-VのVagrant Boxイメージは存在しない場合があります。
+
+4. `vagrant up`は管理者権限で行います。また、`vagrant up`のオプションに`--provider=hyperv`を付与します。
+```
+PS > start-process powershell -verb runas
+PS(Admin) > vagrant up --provider=hyperv
+```
+
+5. Hyper-Vに対するVagrantの制約により、VagrantはHyper-Vにネットワーク設定を一切行えません。`Vagrantfile`の全てのネットワーク設定は無視されます。デフォルトではHyper-Vの｢Default Switch｣というNATネットワーク仮想スイッチに接続されます。Hyper-Vが複数の仮想スイッチを所有している場合、仮想マシン起動中にどのHyper-Vスイッチに接続するか選択するプロンプトが表示されます。仮想スイッチへ接続後、そのネットワークから到達できるDHCPサーバからIPアドレスが割り振られた場合、`vagrant up`中のログに表示されます。
+https://www.vagrantup.com/docs/hyperv/limitations.html
 
 ## 設定ファイル
 
@@ -89,4 +103,3 @@ PS > vagrant up
 
 - アカウント名: IEUser
 - パスワード: Passw0rd!
-- 
