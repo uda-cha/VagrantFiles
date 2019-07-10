@@ -73,3 +73,20 @@ https://www.vagrantup.com/docs/virtualbox/networking.html
 ```
 PS> vagrant plugin install vagrant-alpine
 ```
+
+## おまけ `IE11_Win7`について
+
+MicroSoftが提供しているVagrant Boxを利用して仮想マシンを立ち上げるVagrantfileです。以下のサイトからboxイメージをダウンロードします。
+
+https://developer.microsoft.com/en-us/microsoft-edge/tools/vms/
+
+ダウンロードしたboxを`vagrant add`してから使います。
+
+```
+PS > vagrant box add Win7IE11 "IE11 - Win7.box"
+PS > vagrant up
+```
+
+- アカウント名: IEUser
+- パスワード: Passw0rd!
+- 
