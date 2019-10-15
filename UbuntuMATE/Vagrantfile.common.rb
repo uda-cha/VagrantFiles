@@ -1,3 +1,6 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
 $script_kb_CUI = <<SCRIPT
 cat << "EOS" | sudo tee "/etc/default/console-setup"
 KEYTABLE="jp106"

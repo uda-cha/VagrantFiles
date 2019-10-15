@@ -1,34 +1,17 @@
-$script_kb_CUI = <<SCRIPT
-cat << "EOS" | sudo tee "/etc/default/console-setup"
-KEYTABLE="jp106"
-MODEL="jp106"
-LAYOUT="jp"
-KEYBOARDTYPE="pc"
-EOS
-SCRIPT
-
-$script_kb_GUI = <<SCRIPT
-cat << "EOS" | sudo tee "/etc/default/keyboard"
-XKBMODEL="pc105"
-XKBLAYOUT="jp,jp"
-XKBVARIANT=""
-XKBOPTIONS=""
-
-BACKSPACE="guess"
-EOS
-SCRIPT
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
 
 $reboot = "shutdown -r now"
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "ubuntu/bionic64"
+  config.vm.box = "centos/7"
   config.vm.synced_folder ".", "/vagrant", disabled: true
   config.vm.provision "shell",
     run: "always",
-    inline: $script_kb_CUI
+    inline: "sed -i -e 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config"
   config.vm.provision "shell",
     run: "always",
-    inline: $script_kb_GUI
+    inline: "echo 'KEYMAP=jp106' | sudo tee /etc/vconsole.conf"
 
   @allhosts.each do |host, parameter|
     config.vm.define host.to_s do |h|

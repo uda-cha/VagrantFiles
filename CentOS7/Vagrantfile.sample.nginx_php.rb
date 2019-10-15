@@ -45,4 +45,4 @@ SCRIPT
   },
 }
 
-load "./Vagrantfile.common" if File.exist?("./Vagrantfile.common")
+load "./Vagrantfile.common" if File.exist?("./Vagrantfile.common.rb")

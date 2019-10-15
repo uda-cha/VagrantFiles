@@ -1,14 +1,26 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+$script = <<SCRIPT
+cat << "EOS" | sudo tee "/etc/sysconfig/keyboard"
+KEYTABLE="jp106"
+MODEL="jp106"
+LAYOUT="jp"
+KEYBOARDTYPE="pc"
+EOS
+SCRIPT
+
 $reboot = "shutdown -r now"
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "centos/7"
+  config.vm.box = "centos/6"
   config.vm.synced_folder ".", "/vagrant", disabled: true
   config.vm.provision "shell",
     run: "always",
     inline: "sed -i -e 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config"
   config.vm.provision "shell",
     run: "always",
-    inline: "echo 'KEYMAP=jp106' | sudo tee /etc/vconsole.conf"
+    inline: $script
 
   @allhosts.each do |host, parameter|
     config.vm.define host.to_s do |h|
