@@ -1,0 +1,16 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+@allhosts = {
+  vm1: {
+    hostname:     "CentOS7vm1",
+    memory:       "768",
+    cpus:         "1",
+    command: [
+      "yum install httpd -y",
+      "systemctl start httpd",
+    ],
+  },
+}
+
+load "./Vagrantfile.common.rb" if File.exist?("./Vagrantfile.common.rb")
