@@ -33,4 +33,4 @@
   },
 }
 
-load "./Vagrantfile.common" if File.exist?("./Vagrantfile.common.rb")
+load "./Vagrantfile.common.rb" if File.exist?("./Vagrantfile.common.rb")
